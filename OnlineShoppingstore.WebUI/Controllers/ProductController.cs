@@ -1,4 +1,5 @@
-﻿using OnlineShoppingStore.Domain.Abstract;
+﻿using OnlineShoppingstore.WebUI.Models;
+using OnlineShoppingStore.Domain.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,17 @@ namespace OnlineShoppingstore.WebUI.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository repository;
+        public int PageSize = 4;
         public ProductController(IProductRepository repo) {
             repository = repo;
         }
-        public ViewResult List()
+        public ViewResult List(int page = 1)
         {
-            return View(repository.Products);
+            ProductsListViewModel model = new ProductsListViewModel();
+            return View(repository.Products
+                        .OrderBy(p => p.Id)
+                        .Skip((page -1) * PageSize)
+                        .Take(PageSize));
         }
     }
 }
